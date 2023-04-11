@@ -1,30 +1,51 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, reactive, watch } from 'vue';
+import ElevatorShaft from './components/ElevatorShaft/ElevatorShaft.vue';
+import ElevatorCab from './components/ElevatorCab/ElevatorCab.vue';
+
+const currentFloor = ref(1);
+const targetFloor = reactive({ value: 1 });
+const direction = ref('');
+const activeCalls = reactive(new Array(5).fill(false));
+const arrivedFloors = reactive(new Array(5).fill(false));
+
+const callElevator = async (floor) => {
+  targetFloor.value = floor;
+  activeCalls[floor - 1] = true;
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  while (currentFloor.value !== floor) {
+    if (floor > currentFloor.value) {
+      currentFloor.value++;
+    } else {
+      currentFloor.value--;
+    }
+    await delay(1000);
+  }
+
+  arrivedFloors[floor - 1] = true;
+  await delay(3000);
+  activeCalls[floor - 1] = false;
+  arrivedFloors[floor - 1] = false;
+};
+
+watch(currentFloor, (newFloor, oldFloor) => {
+  direction.value = newFloor > oldFloor ? '↑' : '↓';
+});
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <elevator-shaft
+    :callElevator="callElevator"
+    :activeCalls="activeCalls"
+    :arrivedFloors="arrivedFloors"
+  />
+  <elevator-cab
+    :currentFloor="currentFloor"
+    :direction="direction"
+    :targetFloor="targetFloor.value"
+    :activeCalls="activeCalls"
+  />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>
