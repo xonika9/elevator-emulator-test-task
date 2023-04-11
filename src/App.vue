@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import ElevatorShaft from './components/ElevatorShaft/ElevatorShaft.vue';
+import ElevatorFloors from './components/ElevatorFloors/ElevatorFloors.vue';
 import ElevatorCab from './components/ElevatorCab/ElevatorCab.vue';
 import { NUM_FLOORS } from './config';
 
@@ -71,7 +72,8 @@ watch(currentFloor, (newFloor, oldFloor) => {
 </script>
 
 <template>
-  <elevator-shaft
+  <elevator-shaft />
+  <elevator-floors
     :callElevator="callElevator"
     :activeCalls="activeCalls"
     :arrivedFloors="arrivedFloors"
