@@ -12,7 +12,7 @@
 - HTML
 - CSS
 - JavaScript
-- Vue
+- Vue 3
 - Vite
 
 Link to [Vercel Deploy](https://elevator-emulator-test-task.vercel.app/)
