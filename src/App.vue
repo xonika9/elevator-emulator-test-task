@@ -11,6 +11,20 @@ const activeCalls = reactive(new Array(NUM_FLOORS).fill(false));
 const arrivedFloors = reactive(new Array(NUM_FLOORS).fill(false));
 const callQueue = ref([]);
 const movingToTarget = ref(false);
+const storedState = JSON.parse(localStorage.getItem('elevatorState') || '{}');
+
+currentFloor.value = storedState.currentFloor || 1;
+targetFloor.value = storedState.targetFloor || 1;
+callQueue.value = storedState.callQueue || [];
+
+const saveState = () => {
+  const state = {
+    currentFloor: currentFloor.value,
+    targetFloor: targetFloor.value,
+    callQueue: callQueue.value,
+  };
+  localStorage.setItem('elevatorState', JSON.stringify(state));
+};
 
 const callElevator = async (floor) => {
   if (
@@ -23,6 +37,7 @@ const callElevator = async (floor) => {
 
   callQueue.value.push(floor);
   activeCalls[floor - 1] = true;
+  saveState();
   if (movingToTarget.value) return;
 
   while (callQueue.value.length > 0) {
@@ -46,6 +61,7 @@ const callElevator = async (floor) => {
     arrivedFloors[targetFloor.value - 1] = false;
     callQueue.value.shift();
     movingToTarget.value = false;
+    saveState();
   }
 };
 
