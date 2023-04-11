@@ -1,2 +1,3 @@
-export const NUM_FLOORS = 10;
-export const NUM_ELEVATORS = 5;
+export const NUM_FLOORS = parseInt(localStorage.getItem('numFloors')) || 10;
+export const NUM_ELEVATORS =
+  parseInt(localStorage.getItem('numElevators')) || 5;
