@@ -95,10 +95,22 @@ const elevators = new Array(NUM_ELEVATORS).fill(null).map((_, index) => {
 });
 
 const callElevator = async (floor) => {
-  const availableElevator = elevators.find(
+  const availableElevators = elevators.filter(
     (elevator) => !elevator.movingToTarget.value
   );
-  const elevatorToUse = availableElevator || elevators[0];
+
+  const closestElevator = availableElevators.reduce((closest, elevator) => {
+    if (
+      !closest ||
+      Math.abs(elevator.currentFloor.value - floor) <
+        Math.abs(closest.currentFloor.value - floor)
+    ) {
+      return elevator;
+    }
+    return closest;
+  }, null);
+
+  const elevatorToUse = closestElevator || elevators[0];
   await elevatorToUse.callElevator(floor);
 };
 
