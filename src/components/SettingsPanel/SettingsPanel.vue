@@ -5,9 +5,19 @@ import { NUM_FLOORS, NUM_ELEVATORS } from '../../config';
 const numFloors = ref(NUM_FLOORS);
 const numElevators = ref(NUM_ELEVATORS);
 
-const updateConfig = () => {
+const validateValue = (value) => {
+  return value > 0 ? value : 1;
+};
+
+const saveConfig = () => {
   localStorage.setItem('numFloors', numFloors.value);
   localStorage.setItem('numElevators', numElevators.value);
+};
+
+const updateConfig = () => {
+  numFloors.value = validateValue(numFloors.value);
+  numElevators.value = validateValue(numElevators.value);
+  saveConfig();
   location.reload();
 };
 </script>
