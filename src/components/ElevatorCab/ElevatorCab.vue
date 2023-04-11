@@ -4,6 +4,7 @@ import IndicationPanel from '../IndicationPanel/IndicationPanel.vue';
 
 const props = defineProps({
   currentFloor: Number,
+  direction: String,
 });
 
 const cabStyle = computed(() => {
@@ -17,7 +18,10 @@ const cabStyle = computed(() => {
 
 <template>
   <div class="elevator-cab" :style="cabStyle">
-    <indication-panel :currentFloor="props.currentFloor" />
+    <indication-panel
+      :currentFloor="props.currentFloor"
+      :direction="props.direction"
+    />
   </div>
 </template>
 
