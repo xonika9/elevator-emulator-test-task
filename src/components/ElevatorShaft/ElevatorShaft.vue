@@ -1,8 +1,7 @@
 <script setup>
 const props = defineProps({
   callElevator: Function,
-  targetFloor: Number,
-  currentFloor: Number,
+  activeCalls: Array,
 });
 </script>
 
@@ -13,8 +12,8 @@ const props = defineProps({
       <div class="floor-number">{{ floor }}</div>
       <button
         class="call-button"
-        :class="{ active: floor === targetFloor && floor !== currentFloor }"
-        @click="() => callElevator(floor)"
+        :class="{ active: activeCalls[floor - 1] }"
+        @click="callElevator(floor)"
       >
         Call
       </button>

@@ -6,9 +6,11 @@ import ElevatorCab from './components/ElevatorCab/ElevatorCab.vue';
 const currentFloor = ref(1);
 const targetFloor = reactive({ value: 1 });
 const direction = ref('');
+const activeCalls = reactive(new Array(5).fill(false));
 
 const callElevator = async (floor) => {
   targetFloor.value = floor;
+  activeCalls[floor - 1] = true;
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   while (currentFloor.value !== floor) {
@@ -19,6 +21,8 @@ const callElevator = async (floor) => {
     }
     await delay(1000);
   }
+
+  activeCalls[floor - 1] = false;
 };
 
 watch(currentFloor, (newFloor, oldFloor) => {
@@ -27,11 +31,7 @@ watch(currentFloor, (newFloor, oldFloor) => {
 </script>
 
 <template>
-  <elevator-shaft
-    :callElevator="callElevator"
-    :targetFloor="targetFloor.value"
-    :currentFloor="currentFloor"
-  />
+  <elevator-shaft :callElevator="callElevator" :activeCalls="activeCalls" />
   <elevator-cab
     :currentFloor="currentFloor"
     :direction="direction"
