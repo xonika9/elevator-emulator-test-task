@@ -7,9 +7,18 @@ const currentFloor = ref(1);
 const targetFloor = reactive({ value: 1 });
 const direction = ref('');
 
-const callElevator = (floor) => {
+const callElevator = async (floor) => {
   targetFloor.value = floor;
-  currentFloor.value = floor;
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  while (currentFloor.value !== floor) {
+    if (floor > currentFloor.value) {
+      currentFloor.value++;
+    } else {
+      currentFloor.value--;
+    }
+    await delay(1000);
+  }
 };
 
 watch(currentFloor, (newFloor, oldFloor) => {
@@ -19,7 +28,11 @@ watch(currentFloor, (newFloor, oldFloor) => {
 
 <template>
   <elevator-shaft :callElevator="callElevator" />
-  <elevator-cab :currentFloor="currentFloor" :direction="direction" />
+  <elevator-cab
+    :currentFloor="currentFloor"
+    :direction="direction"
+    :targetFloor="targetFloor.value"
+  />
 </template>
 
 <style scoped></style>
