@@ -27,7 +27,11 @@ watch(currentFloor, (newFloor, oldFloor) => {
 </script>
 
 <template>
-  <elevator-shaft :callElevator="callElevator" />
+  <elevator-shaft
+    :callElevator="callElevator"
+    :targetFloor="targetFloor.value"
+    :currentFloor="currentFloor"
+  />
   <elevator-cab
     :currentFloor="currentFloor"
     :direction="direction"
