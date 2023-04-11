@@ -22,7 +22,7 @@ const cabStyle = computed(() => {
 <template>
   <div class="elevator-cab" :style="cabStyle">
     <indication-panel
-      :currentFloor="props.currentFloor"
+      :currentFloor="props.targetFloor"
       :direction="props.direction"
     />
   </div>
