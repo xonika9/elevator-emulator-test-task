@@ -49,3 +49,19 @@ Link to [Vercel Deploy](https://elevator-emulator-test-task.vercel.app/)
 Приложение спроектировано таким образом, чтобы его было легко масштабировать. В конфиге можно изменить количество этажей и лифтов.
 
 При наличии двух и более свободных лифтов вызов обрабатывает лифт, наиболее близко расположенный к целевому этажу.
+
+## Установка и запуск
+
+```bash
+# Склонируйте репозиторий
+git clone https://github.com/xonika9/elevator-emulator-test-task.git
+
+# Зайдите в папку проекта
+cd elevator-emulator-test-task
+
+# Установите зависимости
+npm i
+
+# Запустите проект на localhost
+npm run start
+```
