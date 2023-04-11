@@ -7,6 +7,7 @@ const props = defineProps({
   direction: String,
   targetFloor: Number,
   activeCalls: Array,
+  numFloors: Number,
 });
 
 const isResting = computed(() => props.activeCalls[props.currentFloor - 1]);
@@ -14,10 +15,12 @@ const isResting = computed(() => props.activeCalls[props.currentFloor - 1]);
 const cabStyle = computed(() => {
   const floorHeight = 100;
   const translateY = (props.currentFloor - 1) * floorHeight;
-  const transitionDuration = 1; // одна секунда на этаж
+  const transitionDuration = 1;
+  const cabHeight = 100 / props.numFloors;
   return {
     transform: `translateY(-${translateY}%)`,
     transition: `transform ${transitionDuration}s linear`,
+    height: `${cabHeight}%`,
   };
 });
 </script>
