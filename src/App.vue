@@ -1,25 +1,30 @@
 <script setup>
-import { ref, reactive, watch, computed } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import ElevatorShaft from './components/ElevatorShaft/ElevatorShaft.vue';
 import ElevatorFloors from './components/ElevatorFloors/ElevatorFloors.vue';
 import ElevatorCab from './components/ElevatorCab/ElevatorCab.vue';
 import { NUM_FLOORS, NUM_ELEVATORS } from './config';
 
-const createElevator = () => {
+const elevatorState = (index) => {
+  const storedState = JSON.parse(
+    localStorage.getItem(`elevatorState-${index}`) || '{}'
+  );
+  return {
+    currentFloor: ref(storedState.currentFloor || 1),
+    targetFloor: ref(storedState.targetFloor || 1),
+    callQueue: ref(storedState.callQueue || []),
+  };
+};
+
+const createElevator = (index) => {
+  const state = elevatorState(index);
   const elevator = {
-    currentFloor: ref(1),
-    targetFloor: reactive({ value: 1 }),
+    ...state,
     direction: ref(''),
     activeCalls: reactive(new Array(NUM_FLOORS).fill(false)),
     arrivedFloors: reactive(new Array(NUM_FLOORS).fill(false)),
-    callQueue: ref([]),
     movingToTarget: ref(false),
   };
-
-  watch(elevator.currentFloor, (newFloor, oldFloor) => {
-    elevator.direction.value = newFloor > oldFloor ? '↑' : '↓';
-  });
-
   return elevator;
 };
 
@@ -32,19 +37,19 @@ const saveState = (elevator, index) => {
   localStorage.setItem(`elevatorState-${index}`, JSON.stringify(state));
 };
 
-const restoreState = (elevator, index) => {
-  const storedState = JSON.parse(
-    localStorage.getItem(`elevatorState-${index}`) || '{}'
-  );
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  elevator.currentFloor.value = storedState.currentFloor || 1;
-  elevator.targetFloor.value = storedState.targetFloor || 1;
-  elevator.callQueue.value = storedState.callQueue || [];
+// Перемещение лифта к целевому этажу
+const moveElevatorToTarget = async (elevator) => {
+  while (elevator.currentFloor.value !== elevator.targetFloor.value) {
+    elevator.direction.value =
+      elevator.targetFloor.value > elevator.currentFloor.value ? '↑' : '↓';
+    elevator.currentFloor.value += elevator.direction.value === '↑' ? 1 : -1;
+    await delay(1000);
+  }
 };
 
 const operateElevator = (elevator, index) => {
-  restoreState(elevator, index);
-
   const callElevator = async (floor) => {
     if (
       (elevator.currentFloor.value === floor &&
@@ -64,16 +69,8 @@ const operateElevator = (elevator, index) => {
       elevator.movingToTarget.value = true;
       elevator.targetFloor.value = elevator.callQueue.value[0];
       elevator.activeCalls[elevator.targetFloor.value - 1] = true;
-      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-      while (elevator.currentFloor.value !== elevator.targetFloor.value) {
-        if (elevator.targetFloor.value > elevator.currentFloor.value) {
-          elevator.currentFloor.value++;
-        } else {
-          elevator.currentFloor.value--;
-        }
-        await delay(1000);
-      }
+      await moveElevatorToTarget(elevator);
 
       elevator.arrivedFloors[elevator.targetFloor.value - 1] = true;
       await delay(3000);
@@ -89,7 +86,7 @@ const operateElevator = (elevator, index) => {
 };
 
 const elevators = new Array(NUM_ELEVATORS).fill(null).map((_, index) => {
-  const elevator = createElevator();
+  const elevator = createElevator(index);
   const callElevator = operateElevator(elevator, index);
   return { ...elevator, callElevator };
 });
