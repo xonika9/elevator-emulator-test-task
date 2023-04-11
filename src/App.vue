@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch, onMounted } from 'vue';
+import { ref, reactive, watch, computed } from 'vue';
 import ElevatorShaft from './components/ElevatorShaft/ElevatorShaft.vue';
 import ElevatorFloors from './components/ElevatorFloors/ElevatorFloors.vue';
 import ElevatorCab from './components/ElevatorCab/ElevatorCab.vue';
@@ -101,6 +101,14 @@ const callElevator = async (floor) => {
   const elevatorToUse = availableElevator || elevators[0];
   await elevatorToUse.callElevator(floor);
 };
+
+const allActiveCalls = computed(() => {
+  return elevators
+    .map((elevator) => elevator.activeCalls)
+    .reduce((accumulator, calls) => {
+      return accumulator.map((active, index) => active || calls[index]);
+    });
+});
 </script>
 
 <template>
@@ -109,7 +117,7 @@ const callElevator = async (floor) => {
   </div>
   <elevator-floors
     :callElevator="callElevator"
-    :activeCalls="elevators[0].activeCalls"
+    :activeCalls="allActiveCalls"
     :arrivedFloors="elevators[0].arrivedFloors"
     :numFloors="NUM_FLOORS"
   />
