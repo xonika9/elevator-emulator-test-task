@@ -6,7 +6,10 @@ const props = defineProps({
   currentFloor: Number,
   direction: String,
   targetFloor: Number,
+  activeCalls: Array,
 });
+
+const isResting = computed(() => props.activeCalls[props.currentFloor - 1]);
 
 const cabStyle = computed(() => {
   const floorHeight = 100;
@@ -20,7 +23,7 @@ const cabStyle = computed(() => {
 </script>
 
 <template>
-  <div class="elevator-cab" :style="cabStyle">
+  <div class="elevator-cab" :class="{ resting: isResting }" :style="cabStyle">
     <indication-panel
       :currentFloor="props.targetFloor"
       :direction="props.direction"
