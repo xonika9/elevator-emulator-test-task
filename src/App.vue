@@ -3,7 +3,7 @@ import { ref, reactive, computed } from 'vue';
 import ElevatorShaft from './components/ElevatorShaft/ElevatorShaft.vue';
 import ElevatorFloors from './components/ElevatorFloors/ElevatorFloors.vue';
 import ElevatorCab from './components/ElevatorCab/ElevatorCab.vue';
-import Settings from './components/Settings/Settings.vue';
+import SettingsPanel from './components/SettingsPanel/SettingsPanel.vue';
 import { NUM_FLOORS, NUM_ELEVATORS } from './config';
 
 const elevatorState = (index) => {
@@ -130,7 +130,7 @@ const allActiveCalls = computed(() => {
     :arrivedFloors="elevators[0].arrivedFloors"
     :numFloors="NUM_FLOORS"
   />
-  <settings />
+  <settings-panel />
   <div class="elevator-cabs">
     <elevator-cab
       v-for="(elevator, index) in elevators"

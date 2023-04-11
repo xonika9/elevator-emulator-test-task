@@ -42,4 +42,4 @@ const updateConfig = () => {
   </div>
 </template>
 
-<style src="./Settings.css" scoped></style>
+<style src="./SettingsPanel.css" scoped></style>
